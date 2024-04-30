@@ -9,13 +9,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-/**
- * DB is a wrapper for PostgreSQL database connection
- * that uses pgxpool as database driver.
- * It also holds a reference to squirrel.StatementBuilderType
- * which is used to build SQL queries that compatible with PostgreSQL syntax
- */
-
 type DB struct {
 	DB *sql.DB
 }
