@@ -3,14 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/evrintobing17/go-hexagonal-arch/internal/adapter/config"
-	"github.com/evrintobing17/go-hexagonal-arch/internal/adapter/storage/redis"
-
+	"github.com/evrintobing17/go-hexagonal-arch/internal/adapter/logger"
 	"github.com/evrintobing17/go-hexagonal-arch/internal/adapter/storage/postgres"
-	"github.com/gin-gonic/gin"
+	"github.com/evrintobing17/go-hexagonal-arch/internal/adapter/storage/redis"
 )
 
 func main() {
@@ -19,6 +18,11 @@ func main() {
 	if err != nil {
 		os.Exit(1)
 	}
+	// set logger
+	logger.Set(config.App)
+	slog.Info("Start the Application", "app", config.App.Name, "env", config.App.Env)
+
+	// init DB
 	ctx := context.Background()
 	db, err := postgres.New(ctx, config.DB)
 	if err != nil {
@@ -33,7 +37,7 @@ func main() {
 	}
 	defer cache.Close()
 
-	// slog.Info("Successfully connected to the cache server")
+	slog.Info("Successfully connected to the cache server")
 
 	// // Init token service
 	// token, err := paseto.New(config.Token)
@@ -41,7 +45,7 @@ func main() {
 	// 	os.Exit(1)
 	// }
 
-	r := gin.New()
+	// r := gin.New()
 
 	// init repository
 
@@ -51,7 +55,6 @@ func main() {
 
 	listenAddr := fmt.Sprintf("%s:%s", config.HTTP.URL, config.HTTP.Port)
 
-	log.Printf("Starting server on port %v", config.HTTP.Port)
-	log.Fatal(r.Run(listenAddr))
-
+	slog.Info("Starting HTTP Server", "listen_address", listenAddr)
+	// slog.Fatal(r.Run(listenAddr))
 }

@@ -22,7 +22,8 @@ type (
 	}
 	// Token contains all the environment variables for the token service
 	Token struct {
-		Duration string
+		Duration  string
+		SecretKey string
 	}
 	// Redis contains all the environment variables for the cache service
 	Redis struct {
@@ -62,7 +63,8 @@ func New() (*Container, error) {
 	}
 
 	token := &Token{
-		Duration: os.Getenv("TOKEN_DURATION"),
+		Duration:  os.Getenv("TOKEN_DURATION"),
+		SecretKey: os.Getenv("SECRET_KEY"),
 	}
 
 	redis := &Redis{
